@@ -2,7 +2,24 @@ class PlayersController < ApplicationController
   before_action :set_player, only: [:show, :edit, :update, :destroy]
 
   def index
-    @players = Player.order(:name)
+    @series = TournamentSerie.order(:name)
+    @tournaments = Tournament.order(:name)
+
+    @players = if params[:serie_id].present?
+      @selected_serie = TournamentSerie.find(params[:serie_id])
+      Player.joins(teams: { game: :tournament })
+            .where(tournaments: { tournament_serie_id: params[:serie_id] })
+            .distinct
+            .order(:name)
+    elsif params[:tournament_id].present?
+      @selected_tournament = Tournament.find(params[:tournament_id])
+      Player.joins(teams: :game)
+            .where(games: { tournament_id: params[:tournament_id] })
+            .distinct
+            .order(:name)
+    else
+      Player.order(:name)
+    end
   end
 
   def show

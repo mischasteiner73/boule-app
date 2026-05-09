@@ -59,6 +59,7 @@ class StatisticsController < ApplicationController
     @by_win_margin     = entries.sort_by { |e| [-e[:margin],    e[:player].name] }
     @best_duos         = compute_best_duos(rounds, player_ids)
     @tightest_rounds   = compute_tightest_rounds(rounds)
+    @team_stats        = compute_team_stats(rounds)
   end
 
   def load_rounds(tournament: nil, serie: nil)
@@ -147,5 +148,37 @@ class StatisticsController < ApplicationController
       next if scores.size < 2
       { round: round, margin: scores[0] - scores[1], scores: scores }
     end.sort_by { |e| [e[:margin], -e[:scores][0]] }.first(5)
+  end
+
+  def compute_team_stats(rounds)
+    team_stats = Hash.new { |h, k| h[k] = { players: nil, wins: 0, rounds: 0, points: 0 } }
+
+    rounds.each do |round|
+      scores    = round.round_scores.to_a
+      max_score = scores.map(&:score).compact.max
+      next if max_score.nil?
+
+      round.game.teams.each do |team|
+        team_score = scores.find { |rs| rs.team_id == team.id }&.score
+        next if team_score.nil?
+
+        key = team.players.map(&:id).sort
+        next if key.empty?
+
+        won = team_score == max_score
+        team_stats[key][:players] ||= team.players.sort_by(&:name)
+        team_stats[key][:rounds] += 1
+        team_stats[key][:points] += team_score
+        team_stats[key][:wins]   += 1 if won
+      end
+    end
+
+    team_stats.values
+      .map do |ts|
+        ts[:win_pct]   = ts[:rounds] > 0 ? (ts[:wins].to_f / ts[:rounds] * 100).round(1) : 0.0
+        ts[:avg_score] = ts[:rounds] > 0 ? (ts[:points].to_f / ts[:rounds]).round(1) : 0.0
+        ts
+      end
+      .sort_by { |ts| [-ts[:wins], ts[:players].map(&:name).join] }
   end
 end

@@ -1,5 +1,24 @@
 <h1>Players</h1>
 
+<div class="filter-bar">
+  <form method="get" action="<%= players_path %>">
+    <select name="serie_id" onchange="this.form.submit()">
+      <option value="">All Series</option>
+      <% @series.each do |serie| %>
+        <option value="<%= serie.id %>" <%= "selected" if @selected_serie&.id == serie.id %>><%= serie.name %></option>
+      <% end %>
+    </select>
+  </form>
+  <form method="get" action="<%= players_path %>">
+    <select name="tournament_id" onchange="this.form.submit()">
+      <option value="">All Tournaments</option>
+      <% @tournaments.each do |tournament| %>
+        <option value="<%= tournament.id %>" <%= "selected" if @selected_tournament&.id == tournament.id %>><%= tournament.name %></option>
+      <% end %>
+    </select>
+  </form>
+</div>
+
 <%= link_to "New Player", new_player_path, class: "button" %>
 
 <% if @players.any? %>
@@ -23,5 +42,5 @@
     </tbody>
   </table>
 <% else %>
-  <p class="empty-state">No players yet. Add your first player!</p>
+  <p class="empty-state">No players found.</p>
 <% end %>

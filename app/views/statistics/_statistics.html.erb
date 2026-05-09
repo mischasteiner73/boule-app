@@ -141,6 +141,37 @@
     </section>
   </div>
 
+  <% if @team_stats.size > 1 %>
+    <section class="stats-full-width">
+      <h2>👥 Team Records</h2>
+      <p class="stats-subtitle">Each unique player combination and their combined record</p>
+      <table>
+        <thead>
+          <tr>
+            <th>Team</th>
+            <th>Wins</th>
+            <th>Rounds</th>
+            <th>Win %</th>
+            <th>Points</th>
+            <th>Avg Score</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% @team_stats.each_with_index do |ts, index| %>
+            <tr class="<%= index == 0 ? 'rank-first' : '' %>">
+              <td><%= ts[:players].map(&:name).join(" & ") %></td>
+              <td><%= ts[:wins] %></td>
+              <td><%= ts[:rounds] %></td>
+              <td><%= ts[:win_pct] %>%</td>
+              <td><%= ts[:points] %></td>
+              <td><%= ts[:avg_score] %></td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    </section>
+  <% end %>
+
   <% if @best_duos.any? %>
     <section class="stats-full-width">
       <h2>🤝 Best Duos</h2>
