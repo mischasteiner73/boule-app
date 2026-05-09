@@ -17,11 +17,12 @@ body {
 nav {
   background: #1a1a2e;
   color: white;
-  padding: 0 2rem;
+  padding: 0 1.5rem;
   display: flex;
   align-items: center;
   gap: 2rem;
   height: 56px;
+  position: relative;
 }
 
 .nav-brand a {
@@ -29,11 +30,34 @@ nav {
   text-decoration: none;
   font-size: 1.2rem;
   font-weight: bold;
+  white-space: nowrap;
+}
+
+.nav-hamburger {
+  display: none;
+  flex-direction: column;
+  justify-content: center;
+  gap: 5px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0.25rem;
+  margin-left: auto;
+}
+
+.nav-hamburger span {
+  display: block;
+  width: 24px;
+  height: 2px;
+  background: white;
+  border-radius: 2px;
+  transition: opacity 0.2s;
 }
 
 .nav-links {
   display: flex;
   gap: 1.5rem;
+  align-items: center;
 }
 
 .nav-links a {
@@ -57,6 +81,52 @@ nav {
 
 .button-nav-signout:hover {
   color: white;
+}
+
+@media (max-width: 700px) {
+  nav {
+    flex-wrap: wrap;
+    height: auto;
+    padding: 0 1rem;
+  }
+
+  .nav-brand {
+    height: 52px;
+    display: flex;
+    align-items: center;
+  }
+
+  .nav-hamburger {
+    display: flex;
+    height: 52px;
+  }
+
+  .nav-links {
+    display: none;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0;
+    width: 100%;
+    padding-bottom: 0.75rem;
+    border-top: 1px solid rgba(255,255,255,0.1);
+  }
+
+  .nav-links.nav-open {
+    display: flex;
+  }
+
+  .nav-links a,
+  .nav-links form,
+  .nav-links .button-nav-signout {
+    width: 100%;
+    padding: 0.7rem 0;
+    border-bottom: 1px solid rgba(255,255,255,0.07);
+    font-size: 1rem;
+  }
+
+  .nav-links form {
+    border-bottom: none;
+  }
 }
 
 /* Main content */
@@ -680,4 +750,104 @@ tr.totals-row td {
   outline: none;
   border-color: #1a1a2e;
   box-shadow: 0 0 0 2px rgba(26,26,46,0.12);
+}
+
+/* Table scroll wrapper — add class to table containers needing mobile scroll */
+.table-scroll {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* ── Mobile ─────────────────────────────────────────────── */
+@media (max-width: 700px) {
+  main {
+    margin: 1rem auto;
+    padding: 0 1rem;
+  }
+
+  h1 { font-size: 1.4rem; }
+  h2 { font-size: 1.1rem; }
+
+  /* Make all tables scroll horizontally on mobile */
+  table {
+    display: block;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    white-space: nowrap;
+  }
+
+  /* Auth card full-width on small screens */
+  .auth-card {
+    margin: 2rem auto 0;
+    padding: 1.75rem 1.25rem 1.5rem;
+  }
+
+  /* Stats grid: single column */
+  .stats-grid {
+    grid-template-columns: 1fr;
+    gap: 1.25rem;
+  }
+
+  /* Form inputs full-width */
+  .field input[type="text"],
+  .field input[type="number"],
+  .field input[type="date"],
+  .field input[type="datetime-local"],
+  .field select {
+    max-width: 100%;
+  }
+
+  /* Filter bar wraps */
+  .filter-bar {
+    flex-wrap: wrap;
+  }
+
+  .filter-bar select {
+    width: 100%;
+  }
+
+  /* Action buttons stack */
+  .game-show-actions {
+    flex-wrap: wrap;
+  }
+
+  /* Team scorecards stack */
+  .team-scorecards {
+    flex-direction: column;
+  }
+
+  .scorecard {
+    min-width: 0;
+  }
+
+  /* Round form stacks */
+  .round-form {
+    flex-direction: column;
+  }
+
+  /* Team controls stack */
+  .team-controls {
+    flex-wrap: wrap;
+  }
+
+  /* Page-level header row */
+  .game-show-header {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  /* Stats nav wraps (already flex-wrap, just ensure gap) */
+  .stats-nav {
+    gap: 0.4rem;
+  }
+
+  .stats-nav .button-secondary {
+    font-size: 0.82rem;
+    padding: 0.4rem 0.8rem;
+  }
+
+  td, th {
+    padding: 0.6rem 0.75rem;
+    font-size: 0.9rem;
+  }
 }

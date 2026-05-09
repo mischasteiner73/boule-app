@@ -1,0 +1,13 @@
+import { Controller } from "@hotwired/stimulus"
+
+export default class extends Controller {
+  static targets = ["menu"]
+
+  toggle() {
+    this.menuTarget.classList.toggle("nav-open")
+  }
+
+  close() {
+    this.menuTarget.classList.remove("nav-open")
+  }
+}

@@ -10,15 +10,18 @@
   </head>
 
   <body>
-    <nav>
-      <div class="nav-brand"><%= link_to "🎯 Boule Tournament", root_path %></div>
-      <div class="nav-links">
-        <%= link_to "Players", players_path %>
-        <%= link_to "Series", tournament_series_index_path %>
-        <%= link_to "Tournaments", tournaments_path %>
-        <%= link_to "Games", games_path %>
-        <%= link_to "New Game", new_game_path %>
-        <%= link_to "Statistics", statistics_path %>
+    <nav data-controller="nav">
+      <div class="nav-brand"><%= link_to "🎯 Boule", root_path %></div>
+      <button class="nav-hamburger" data-action="nav#toggle" aria-label="Menu">
+        <span></span><span></span><span></span>
+      </button>
+      <div class="nav-links" data-nav-target="menu">
+        <%= link_to "Players", players_path, data: { action: "nav#close" } %>
+        <%= link_to "Series", tournament_series_index_path, data: { action: "nav#close" } %>
+        <%= link_to "Tournaments", tournaments_path, data: { action: "nav#close" } %>
+        <%= link_to "Games", games_path, data: { action: "nav#close" } %>
+        <%= link_to "New Game", new_game_path, data: { action: "nav#close" } %>
+        <%= link_to "Statistics", statistics_path, data: { action: "nav#close" } %>
         <%= button_to "Sign out", destroy_user_session_path, method: :delete, class: "button-nav-signout" %>
       </div>
     </nav>
