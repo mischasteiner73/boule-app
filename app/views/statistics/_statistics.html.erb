@@ -1,6 +1,4 @@
-<% scope_opts = @serie ? { serie: @serie } : { tournament: @tournament } %>
-
-<% if @by_wins.all? { |player| player.total_rounds(**scope_opts) == 0 } %>
+<% if @by_wins.all? { |entry| entry[:rounds] == 0 } %>
   <p class="empty-state">No completed games yet.</p>
 <% else %>
   <div class="stats-grid">
@@ -16,12 +14,12 @@
           </tr>
         </thead>
         <tbody>
-          <% @by_wins.each_with_index do |player, index| %>
+          <% @by_wins.each_with_index do |entry, index| %>
             <tr class="<%= index == 0 ? 'rank-first' : '' %>">
               <td><%= index + 1 %></td>
-              <td><%= player.name %></td>
-              <td><%= player.wins(**scope_opts) %></td>
-              <td><%= player.total_rounds(**scope_opts) %></td>
+              <td><%= entry[:player].name %></td>
+              <td><%= entry[:wins] %></td>
+              <td><%= entry[:rounds] %></td>
             </tr>
           <% end %>
         </tbody>
@@ -40,12 +38,12 @@
           </tr>
         </thead>
         <tbody>
-          <% @by_win_percentage.each_with_index do |player, index| %>
+          <% @by_win_percentage.each_with_index do |entry, index| %>
             <tr class="<%= index == 0 ? 'rank-first' : '' %>">
               <td><%= index + 1 %></td>
-              <td><%= player.name %></td>
-              <td><%= player.win_percentage(**scope_opts) %>%</td>
-              <td><%= player.total_rounds(**scope_opts) %></td>
+              <td><%= entry[:player].name %></td>
+              <td><%= entry[:win_pct] %>%</td>
+              <td><%= entry[:rounds] %></td>
             </tr>
           <% end %>
         </tbody>
@@ -63,11 +61,11 @@
           </tr>
         </thead>
         <tbody>
-          <% @by_points.each_with_index do |player, index| %>
+          <% @by_points.each_with_index do |entry, index| %>
             <tr class="<%= index == 0 ? 'rank-first' : '' %>">
               <td><%= index + 1 %></td>
-              <td><%= player.name %></td>
-              <td><%= player.total_points(**scope_opts) %></td>
+              <td><%= entry[:player].name %></td>
+              <td><%= entry[:points] %></td>
             </tr>
           <% end %>
         </tbody>
@@ -86,12 +84,12 @@
           </tr>
         </thead>
         <tbody>
-          <% @by_average_score.each_with_index do |player, index| %>
+          <% @by_average_score.each_with_index do |entry, index| %>
             <tr class="<%= index == 0 ? 'rank-first' : '' %>">
               <td><%= index + 1 %></td>
-              <td><%= player.name %></td>
-              <td><%= player.average_score(**scope_opts) %></td>
-              <td><%= player.total_rounds(**scope_opts) %></td>
+              <td><%= entry[:player].name %></td>
+              <td><%= entry[:avg_score] %></td>
+              <td><%= entry[:rounds] %></td>
             </tr>
           <% end %>
         </tbody>
@@ -109,11 +107,11 @@
           </tr>
         </thead>
         <tbody>
-          <% @by_streak.each_with_index do |player, index| %>
-            <tr class="<%= index == 0 && player.longest_winning_streak(**scope_opts) > 0 ? 'rank-first' : '' %>">
+          <% @by_streak.each_with_index do |entry, index| %>
+            <tr class="<%= index == 0 && entry[:streak] > 0 ? 'rank-first' : '' %>">
               <td><%= index + 1 %></td>
-              <td><%= player.name %></td>
-              <td><%= player.longest_winning_streak(**scope_opts) %> in a row</td>
+              <td><%= entry[:player].name %></td>
+              <td><%= entry[:streak] %> in a row</td>
             </tr>
           <% end %>
         </tbody>
@@ -131,11 +129,11 @@
           </tr>
         </thead>
         <tbody>
-          <% @by_win_margin.each_with_index do |player, index| %>
-            <tr class="<%= index == 0 && player.biggest_win_margin(**scope_opts) > 0 ? 'rank-first' : '' %>">
+          <% @by_win_margin.each_with_index do |entry, index| %>
+            <tr class="<%= index == 0 && entry[:margin] > 0 ? 'rank-first' : '' %>">
               <td><%= index + 1 %></td>
-              <td><%= player.name %></td>
-              <td><%= player.biggest_win_margin(**scope_opts) > 0 ? "+#{player.biggest_win_margin(**scope_opts)}" : "—" %></td>
+              <td><%= entry[:player].name %></td>
+              <td><%= entry[:margin] > 0 ? "+#{entry[:margin]}" : "—" %></td>
             </tr>
           <% end %>
         </tbody>
@@ -193,7 +191,7 @@
             <tr>
               <td><%= round.game.played_at.strftime("%d.%m.%Y %H:%M") %></td>
               <td>
-                <% round.round_scores.order(score: :desc).each_with_index do |rs, i| %>
+                <% round.round_scores.sort_by { |rs| -rs.score }.each_with_index do |rs, i| %>
                   <%= rs.score %><% if i < round.round_scores.size - 1 %> : <% end %>
                 <% end %>
               </td>
