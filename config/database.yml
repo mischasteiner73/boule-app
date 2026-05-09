@@ -14,5 +14,6 @@ test:
   database: boule_app_test
 
 production:
+  adapter: postgresql
   url: <%= ENV["DATABASE_URL"] %>
   pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
