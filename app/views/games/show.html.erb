@@ -1,0 +1,112 @@
+<div class="game-show-header">
+  <div>
+    <h1>Game — <%= @game.played_at.strftime("%d. %B %Y, %H:%M") %></h1>
+    <p class="game-meta">
+      <%= @teams.size %> teams &middot; <%= @rounds.size %> <%= "round".pluralize(@rounds.size) %>
+    </p>
+  </div>
+  <div class="game-show-actions">
+    <%= link_to "Edit Teams", setup_teams_game_path(@game), class: "button-secondary" %>
+    <%= button_to "Delete Game", game_path(@game), method: :delete,
+          data: { turbo_confirm: "Delete this game and all its rounds?" }, class: "button-danger" %>
+  </div>
+</div>
+
+<% if @teams.empty? %>
+  <p class="empty-state">No teams set up yet.</p>
+  <%= link_to "Set Up Teams", setup_teams_game_path(@game), class: "button" %>
+<% else %>
+
+  <div class="team-scorecards">
+    <% @teams.each_with_index do |team, index| %>
+      <% wins   = @team_wins[team.id] %>
+      <% total  = @team_totals[team.id] %>
+      <% leader = @team_wins.values.max > 0 && wins == @team_wins.values.max %>
+      <div class="scorecard <%= 'scorecard-leader' if leader %>">
+        <div class="scorecard-label">Team <%= index + 1 %></div>
+        <div class="scorecard-players"><%= team.players.map(&:name).join(" & ") %></div>
+        <div class="scorecard-stats">
+          <span><strong><%= wins %></strong> <small>wins</small></span>
+          <span><strong><%= total %></strong> <small>pts total</small></span>
+        </div>
+        <% if leader && @rounds.any? %>
+          <div class="scorecard-badge">🏆 Leading</div>
+        <% end %>
+      </div>
+    <% end %>
+  </div>
+
+  <% if @rounds.any? %>
+    <h2>Rounds</h2>
+    <table class="rounds-table">
+      <thead>
+        <tr>
+          <th>#</th>
+          <% @teams.each_with_index do |team, index| %>
+            <th>Team <%= index + 1 %><br><small><%= team.players.map(&:name).join(" & ") %></small></th>
+          <% end %>
+          <th>Margin</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        <% @rounds.each_with_index do |round, index| %>
+          <% scores     = round.round_scores.sort_by { |rs| @teams.index { |t| t.id == rs.team_id } || 999 } %>
+          <% max_score  = scores.map(&:score).compact.max %>
+          <% score_vals = scores.map(&:score).compact.sort.reverse %>
+          <% margin     = score_vals.size >= 2 ? score_vals[0] - score_vals[1] : nil %>
+          <tr>
+            <td class="round-number"><%= index + 1 %></td>
+            <% @teams.each do |team| %>
+              <% rs        = scores.find { |s| s.team_id == team.id } %>
+              <% is_winner = rs&.score.present? && rs.score == max_score %>
+              <td class="score-cell <%= 'score-winner' if is_winner %>">
+                <%= rs&.score.present? ? rs.score : "—" %>
+                <% if is_winner %><span class="win-indicator">✓</span><% end %>
+              </td>
+            <% end %>
+            <td class="margin-cell">
+              <% if margin %>
+                <span class="margin-badge margin-<%= margin <= 2 ? 'tight' : margin >= 8 ? 'big' : 'normal' %>">
+                  +<%= margin %>
+                </span>
+              <% end %>
+            </td>
+            <td>
+              <%= button_to "✕", game_round_path(@game, round), method: :delete,
+                    data: { turbo_confirm: "Delete round #{index + 1}?" }, class: "button-danger-small" %>
+            </td>
+          </tr>
+        <% end %>
+      </tbody>
+      <tfoot>
+        <tr class="totals-row">
+          <td><strong>Total</strong></td>
+          <% @teams.each do |team| %>
+            <td><strong><%= @team_totals[team.id] %></strong></td>
+          <% end %>
+          <td colspan="2"></td>
+        </tr>
+      </tfoot>
+    </table>
+  <% else %>
+    <p class="empty-state">No rounds yet. Add the first result below.</p>
+  <% end %>
+
+  <h2>Add Round</h2>
+  <%= form_with url: game_rounds_path(@game), method: :post do |form| %>
+    <div class="round-form">
+      <% @teams.each_with_index do |team, index| %>
+        <div class="round-score-field">
+          <label>Team <%= index + 1 %><span class="round-score-names"><%= team.players.map(&:name).join(" & ") %></span></label>
+          <input type="number" name="scores[<%= team.id %>]" min="0" max="30" placeholder="0">
+        </div>
+      <% end %>
+      <%= form.submit "Add Round", class: "button" %>
+    </div>
+  <% end %>
+
+<% end %>
+
+<%= link_to "← Back to Games", games_path %>
+

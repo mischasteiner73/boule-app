@@ -1,0 +1,16 @@
+<%= form_with model: player do |form| %>
+  <% if player.errors.any? %>
+    <div class="error-messages">
+      <% player.errors.full_messages.each do |message| %>
+        <p><%= message %></p>
+      <% end %>
+    </div>
+  <% end %>
+
+  <div class="field">
+    <%= form.label :name, "Player Name" %>
+    <%= form.text_field :name, autofocus: true %>
+  </div>
+
+  <%= form.submit class: "button" %>
+<% end %>

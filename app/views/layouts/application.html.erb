@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title><%= content_for(:title) || "Boule Tournament" %></title>
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <%= csrf_meta_tags %>
+    <%= csp_meta_tag %>
+    <%= stylesheet_link_tag "application", "data-turbo-track": "reload" %>
+    <%= javascript_importmap_tags %>
+  </head>
+
+  <body>
+    <nav>
+      <div class="nav-brand"><%= link_to "🎯 Boule Tournament", root_path %></div>
+      <div class="nav-links">
+        <%= link_to "Players", players_path %>
+        <%= link_to "Games", games_path %>
+        <%= link_to "New Game", new_game_path %>
+        <%= link_to "Statistics", statistics_path %>
+      </div>
+    </nav>
+
+    <main>
+      <% if notice.present? %>
+        <div class="flash flash-notice"><%= notice %></div>
+      <% end %>
+      <% if alert.present? %>
+        <div class="flash flash-alert"><%= alert %></div>
+      <% end %>
+
+      <%= yield %>
+    </main>
+  </body>
+</html>
+

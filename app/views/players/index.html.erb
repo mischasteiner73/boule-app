@@ -1,0 +1,27 @@
+<h1>Players</h1>
+
+<%= link_to "New Player", new_player_path, class: "button" %>
+
+<% if @players.any? %>
+  <table>
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% @players.each do |player| %>
+        <tr>
+          <td><%= player.name %></td>
+          <td class="actions">
+            <%= link_to "Edit", edit_player_path(player) %>
+            <%= button_to "Delete", player_path(player), method: :delete, data: { turbo_confirm: "Delete #{player.name}?" }, class: "button-danger" %>
+          </td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+<% else %>
+  <p class="empty-state">No players yet. Add your first player!</p>
+<% end %>

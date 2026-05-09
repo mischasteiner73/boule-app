@@ -1,0 +1,43 @@
+<h1>Games</h1>
+
+<%= link_to "New Game", new_game_path, class: "button" %>
+
+<% if @games.any? %>
+  <table>
+    <thead>
+      <tr>
+        <th>Tournament</th>
+        <th>Date & Time</th>
+        <th>Teams & Scores</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% @games.each do |game| %>
+        <tr>
+          <td><%= game.tournament.name %></td>
+          <td><%= link_to game.played_at.strftime("%d.%m.%Y %H:%M"), game_path(game) %></td>
+          <td>
+            <% game.teams.each_with_index do |team, index| %>
+              <span class="team-summary"><%= team.players.map(&:name).join(" & ") %></span>
+              <% if index < game.teams.size - 1 %>
+                <span class="vs">vs</span>
+              <% end %>
+            <% end %>
+            <% round_count = game.rounds.size %>
+            <% if round_count > 0 %>
+              <span class="round-count">(<%= round_count %> <%= "round".pluralize(round_count) %>)</span>
+            <% end %>
+          </td>
+          <td class="actions">
+            <%= link_to "View", game_path(game) %>
+            <%= link_to "Setup / Edit", setup_teams_game_path(game) %>
+            <%= button_to "Delete", game_path(game), method: :delete, data: { turbo_confirm: "Delete this game?" }, class: "button-danger" %>
+          </td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+<% else %>
+  <p class="empty-state">No games yet. Create your first game!</p>
+<% end %>

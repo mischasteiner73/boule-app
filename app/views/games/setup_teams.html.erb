@@ -1,0 +1,103 @@
+<h1>Set Up Teams — <%= @game.played_at.strftime("%d.%m.%Y %H:%M") %></h1>
+
+<% if @players.empty? %>
+  <p class="empty-state">No players yet. <%= link_to "Add players first", new_player_path %>.</p>
+<% else %>
+  <%= form_with url: save_teams_game_path(@game), method: :post, id: "teams-form" do %>
+    <div id="teams-container">
+      <% existing_teams = @game.teams.includes(:players).to_a %>
+      <% team_count = [existing_teams.size, @team_count].max %>
+      <% team_count.times do |index| %>
+        <% existing_team = existing_teams[index] %>
+        <div class="team-block" id="team-<%= index %>">
+          <h3>Team <%= index + 1 %></h3>
+
+          <div class="field">
+            <label>Players (select 1–3)</label>
+            <% @players.each do |player| %>
+              <label class="checkbox-label">
+                <input type="checkbox"
+                       name="teams[<%= index %>][player_ids][]"
+                       value="<%= player.id %>"
+                       <%= existing_team&.players&.include?(player) ? "checked" : "" %>>
+                <%= player.name %>
+              </label>
+            <% end %>
+          </div>
+        </div>
+      <% end %>
+    </div>
+
+    <div class="team-controls">
+      <button type="button" id="add-team" class="button-secondary">+ Add Team</button>
+      <button type="button" id="remove-team" class="button-secondary">− Remove Last Team</button>
+    </div>
+
+    <%= submit_tag "Save Teams & Scores", class: "button", id: "save-teams" %>
+  <% end %>
+
+  <%= link_to "Back to Games", games_path %>
+
+  <script>
+    (() => {
+      const players = <%= raw @players.map { |p| { id: p.id, name: p.name } }.to_json %>;
+
+      function syncCheckboxes() {
+        const allCheckboxes = document.querySelectorAll('#teams-container input[type="checkbox"]');
+        const checkedPlayerIds = new Set(
+          [...allCheckboxes].filter(cb => cb.checked).map(cb => cb.value)
+        );
+
+        allCheckboxes.forEach(cb => {
+          if (!cb.checked && checkedPlayerIds.has(cb.value)) {
+            cb.disabled = true;
+            cb.closest('label').classList.add('checkbox-disabled');
+          } else {
+            cb.disabled = false;
+            cb.closest('label').classList.remove('checkbox-disabled');
+          }
+        });
+      }
+
+      function teamHtml(index) {
+        const checkboxes = players.map(p =>
+          `<label class="checkbox-label">
+            <input type="checkbox" name="teams[${index}][player_ids][]" value="${p.id}">
+            ${p.name}
+          </label>`
+        ).join('');
+
+        return `
+          <div class="team-block" id="team-${index}">
+            <h3>Team ${index + 1}</h3>
+            <div class="field">
+              <label>Players (select 1–3)</label>
+              ${checkboxes}
+            </div>
+          </div>`;
+      }
+
+      document.getElementById('teams-container').addEventListener('change', syncCheckboxes);
+
+      document.getElementById('add-team').addEventListener('click', function() {
+        const container = document.getElementById('teams-container');
+        const count = container.querySelectorAll('.team-block').length;
+        if (count < 5) {
+          container.insertAdjacentHTML('beforeend', teamHtml(count));
+          syncCheckboxes();
+        }
+      });
+
+      document.getElementById('remove-team').addEventListener('click', function() {
+        const container = document.getElementById('teams-container');
+        const blocks = container.querySelectorAll('.team-block');
+        if (blocks.length > 2) {
+          blocks[blocks.length - 1].remove();
+          syncCheckboxes();
+        }
+      });
+
+      syncCheckboxes();
+    })();
+  </script>
+<% end %>

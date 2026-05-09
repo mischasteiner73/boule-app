@@ -1,0 +1,209 @@
+<% if @by_wins.all? { |player| player.total_rounds(tournament: @tournament) == 0 } %>
+  <p class="empty-state">No completed games yet.</p>
+<% else %>
+  <div class="stats-grid">
+    <section>
+      <h2>🏆 Most Wins</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>Rank</th>
+            <th>Player</th>
+            <th>Wins</th>
+            <th>Rounds</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% @by_wins.each_with_index do |player, index| %>
+            <tr class="<%= index == 0 ? 'rank-first' : '' %>">
+              <td><%= index + 1 %></td>
+              <td><%= player.name %></td>
+              <td><%= player.wins(tournament: @tournament) %></td>
+              <td><%= player.total_rounds(tournament: @tournament) %></td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    </section>
+
+    <section>
+      <h2>📊 Win Percentage</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>Rank</th>
+            <th>Player</th>
+            <th>Win %</th>
+            <th>Rounds</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% @by_win_percentage.each_with_index do |player, index| %>
+            <tr class="<%= index == 0 ? 'rank-first' : '' %>">
+              <td><%= index + 1 %></td>
+              <td><%= player.name %></td>
+              <td><%= player.win_percentage(tournament: @tournament) %>%</td>
+              <td><%= player.total_rounds(tournament: @tournament) %></td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    </section>
+
+    <section>
+      <h2>🎯 Most Points</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>Rank</th>
+            <th>Player</th>
+            <th>Total Points</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% @by_points.each_with_index do |player, index| %>
+            <tr class="<%= index == 0 ? 'rank-first' : '' %>">
+              <td><%= index + 1 %></td>
+              <td><%= player.name %></td>
+              <td><%= player.total_points(tournament: @tournament) %></td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    </section>
+
+    <section>
+      <h2>⚡ Highest Average Score</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>Rank</th>
+            <th>Player</th>
+            <th>Avg / Round</th>
+            <th>Rounds</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% @by_average_score.each_with_index do |player, index| %>
+            <tr class="<%= index == 0 ? 'rank-first' : '' %>">
+              <td><%= index + 1 %></td>
+              <td><%= player.name %></td>
+              <td><%= player.average_score(tournament: @tournament) %></td>
+              <td><%= player.total_rounds(tournament: @tournament) %></td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    </section>
+
+    <section>
+      <h2>🔥 Longest Winning Streak</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>Rank</th>
+            <th>Player</th>
+            <th>Best Streak</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% @by_streak.each_with_index do |player, index| %>
+            <tr class="<%= index == 0 && player.longest_winning_streak(tournament: @tournament) > 0 ? 'rank-first' : '' %>">
+              <td><%= index + 1 %></td>
+              <td><%= player.name %></td>
+              <td><%= player.longest_winning_streak(tournament: @tournament) %> in a row</td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    </section>
+
+    <section>
+      <h2>💥 Biggest Win Margin</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>Rank</th>
+            <th>Player</th>
+            <th>Best Margin</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% @by_win_margin.each_with_index do |player, index| %>
+            <tr class="<%= index == 0 && player.biggest_win_margin(tournament: @tournament) > 0 ? 'rank-first' : '' %>">
+              <td><%= index + 1 %></td>
+              <td><%= player.name %></td>
+              <td><%= player.biggest_win_margin(tournament: @tournament) > 0 ? "+#{player.biggest_win_margin(tournament: @tournament)}" : "—" %></td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    </section>
+  </div>
+
+  <% if @best_duos.any? %>
+    <section class="stats-full-width">
+      <h2>🤝 Best Duos</h2>
+      <p class="stats-subtitle">Pairs who play together and their combined record</p>
+      <table>
+        <thead>
+          <tr>
+            <th>Rank</th>
+            <th>Duo</th>
+            <th>Win %</th>
+            <th>Wins</th>
+            <th>Rounds</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% @best_duos.each_with_index do |duo, index| %>
+            <% win_pct = (duo[:wins].to_f / duo[:rounds] * 100).round(1) %>
+            <tr class="<%= index == 0 ? 'rank-first' : '' %>">
+              <td><%= index + 1 %></td>
+              <td><%= duo[:players].map(&:name).join(" & ") %></td>
+              <td><%= win_pct %>%</td>
+              <td><%= duo[:wins] %></td>
+              <td><%= duo[:rounds] %></td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    </section>
+  <% end %>
+
+  <% if @tightest_rounds.any? %>
+    <section class="stats-full-width">
+      <h2>😅 Closest Rounds</h2>
+      <p class="stats-subtitle">The nail-biters — rounds decided by the smallest margin</p>
+      <table>
+        <thead>
+          <tr>
+            <th>Date</th>
+            <th>Scores</th>
+            <th>Margin</th>
+            <th>Winner</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% @tightest_rounds.each do |entry| %>
+            <% round = entry[:round] %>
+            <% winning_rs = round.round_scores.max_by(&:score) %>
+            <tr>
+              <td><%= round.game.played_at.strftime("%d.%m.%Y %H:%M") %></td>
+              <td>
+                <% round.round_scores.order(score: :desc).each_with_index do |rs, i| %>
+                  <%= rs.score %><% if i < round.round_scores.size - 1 %> : <% end %>
+                <% end %>
+              </td>
+              <td><%= entry[:margin] == 0 ? "Draw!" : "+#{entry[:margin]}" %></td>
+              <td>
+                <% winner_team = round.game.teams.find { |t| t.id == winning_rs.team_id } %>
+                <%= winner_team&.players&.map(&:name)&.join(" & ") %>
+              </td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    </section>
+  <% end %>
+<% end %>

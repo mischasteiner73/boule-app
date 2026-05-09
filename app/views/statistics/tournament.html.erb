@@ -1,0 +1,10 @@
+<h1>Statistics — <%= @tournament.name %></h1>
+
+<div class="stats-nav">
+  <%= link_to "← Overall Statistics", statistics_path, class: "button-secondary" %>
+  <% (@tournaments - [@tournament]).each do |tournament| %>
+    <%= link_to tournament.name, tournament_statistics_path(tournament), class: "button-secondary" %>
+  <% end %>
+</div>
+
+<%= render "statistics" %>

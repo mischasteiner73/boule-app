@@ -1,0 +1,25 @@
+<h1>New Game</h1>
+
+<%= form_with model: @game do |form| %>
+  <% if @game.errors.any? %>
+    <div class="error-messages">
+      <% @game.errors.full_messages.each do |message| %>
+        <p><%= message %></p>
+      <% end %>
+    </div>
+  <% end %>
+
+  <div class="field">
+    <%= form.label :tournament_id, "Tournament" %>
+    <%= form.select :tournament_id, @tournaments.map { |t| [t.name, t.id] }, { prompt: "Select tournament" } %>
+  </div>
+
+  <div class="field">
+    <%= form.label :played_at, "Date & Time" %>
+    <%= form.datetime_local_field :played_at %>
+  </div>
+
+  <%= form.submit "Create Game & Set Up Teams", class: "button" %>
+<% end %>
+
+<%= link_to "Back to Games", games_path %>

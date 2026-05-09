@@ -1,0 +1,517 @@
+/* Application styles */
+
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  background: #f5f5f0;
+  color: #222;
+  margin: 0;
+  padding: 0;
+  line-height: 1.5;
+}
+
+/* Navigation */
+nav {
+  background: #1a1a2e;
+  color: white;
+  padding: 0 2rem;
+  display: flex;
+  align-items: center;
+  gap: 2rem;
+  height: 56px;
+}
+
+.nav-brand a {
+  color: white;
+  text-decoration: none;
+  font-size: 1.2rem;
+  font-weight: bold;
+}
+
+.nav-links {
+  display: flex;
+  gap: 1.5rem;
+}
+
+.nav-links a {
+  color: #ccc;
+  text-decoration: none;
+  font-size: 0.95rem;
+}
+
+.nav-links a:hover {
+  color: white;
+}
+
+/* Main content */
+main {
+  max-width: 1000px;
+  margin: 2rem auto;
+  padding: 0 1.5rem;
+}
+
+h1 {
+  margin-top: 0;
+  margin-bottom: 1.5rem;
+  font-size: 1.8rem;
+}
+
+h2 {
+  font-size: 1.3rem;
+  margin-bottom: 1rem;
+}
+
+/* Flash messages */
+.flash {
+  padding: 0.75rem 1rem;
+  border-radius: 6px;
+  margin-bottom: 1.5rem;
+  font-size: 0.95rem;
+}
+
+.flash-notice {
+  background: #d4edda;
+  color: #155724;
+  border: 1px solid #c3e6cb;
+}
+
+.flash-alert {
+  background: #f8d7da;
+  color: #721c24;
+  border: 1px solid #f5c6cb;
+}
+
+/* Tables */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  background: white;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+}
+
+th {
+  background: #1a1a2e;
+  color: white;
+  padding: 0.75rem 1rem;
+  text-align: left;
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+
+td {
+  padding: 0.7rem 1rem;
+  border-bottom: 1px solid #eee;
+}
+
+tr:last-child td {
+  border-bottom: none;
+}
+
+tr:hover td {
+  background: #fafafa;
+}
+
+tr.rank-first td {
+  background: #fffbea;
+  font-weight: 600;
+}
+
+.actions {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.vs {
+  color: #999;
+  font-size: 0.8rem;
+  margin: 0 0.3rem;
+}
+
+.team-summary {
+  white-space: nowrap;
+}
+
+/* Buttons */
+.button, a.button {
+  display: inline-block;
+  background: #1a1a2e;
+  color: white;
+  border: none;
+  padding: 0.5rem 1.2rem;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.95rem;
+  text-decoration: none;
+  margin-bottom: 1rem;
+}
+
+.button:hover {
+  background: #2d2d50;
+}
+
+.button-secondary {
+  display: inline-block;
+  background: white;
+  color: #1a1a2e;
+  border: 1px solid #ccc;
+  padding: 0.5rem 1.2rem;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  text-decoration: none;
+}
+
+.button-secondary:hover {
+  background: #f0f0f0;
+}
+
+.button-danger {
+  background: #c0392b;
+  color: white;
+  border: none;
+  padding: 0.4rem 0.9rem;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.85rem;
+}
+
+.button-danger:hover {
+  background: #a93226;
+}
+
+/* Forms */
+.field {
+  margin-bottom: 1.2rem;
+}
+
+.field label {
+  display: block;
+  font-weight: 600;
+  margin-bottom: 0.4rem;
+  font-size: 0.9rem;
+}
+
+.field input[type="text"],
+.field input[type="number"],
+.field input[type="date"] {
+  width: 100%;
+  max-width: 400px;
+  padding: 0.5rem 0.75rem;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 0.95rem;
+}
+
+.checkbox-label {
+  display: block;
+  font-weight: normal;
+  margin-bottom: 0.3rem;
+  cursor: pointer;
+}
+
+.checkbox-label.checkbox-disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+}
+
+.checkbox-label input[type="checkbox"] {
+  margin-right: 0.5rem;
+}
+
+/* Team blocks */
+.team-block {
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  padding: 1.2rem;
+  margin-bottom: 1rem;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+}
+
+.team-block h3 {
+  margin-top: 0;
+  margin-bottom: 1rem;
+  color: #1a1a2e;
+}
+
+.team-block input[type="number"] {
+  width: 100px;
+  padding: 0.5rem 0.75rem;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 1rem;
+}
+
+.team-controls {
+  display: flex;
+  gap: 0.75rem;
+  margin-bottom: 1.5rem;
+}
+
+/* Team cards (game show) */
+.team-card {
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  padding: 1rem 1.5rem;
+  margin-bottom: 1rem;
+}
+
+/* Statistics */
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 2rem;
+  margin-bottom: 2rem;
+}
+
+.stats-full-width {
+  margin-bottom: 2rem;
+}
+
+.stats-subtitle {
+  color: #888;
+  font-size: 0.9rem;
+  margin: -0.5rem 0 1rem;
+}
+
+/* Error messages */
+.error-messages {
+  background: #f8d7da;
+  color: #721c24;
+  border: 1px solid #f5c6cb;
+  border-radius: 6px;
+  padding: 0.75rem 1rem;
+  margin-bottom: 1rem;
+}
+
+.error-messages p {
+  margin: 0.2rem 0;
+}
+
+/* Empty state */
+.empty-state {
+  color: #888;
+  font-style: italic;
+  padding: 1rem 0;
+}
+
+/* Round form */
+.round-form {
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  padding: 1.2rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  align-items: flex-end;
+  margin-bottom: 1.5rem;
+}
+
+.round-score-field label {
+  display: block;
+  font-size: 0.85rem;
+  font-weight: 600;
+  margin-bottom: 0.3rem;
+  color: #555;
+}
+
+.round-score-field input[type="number"] {
+  width: 90px;
+  padding: 0.5rem 0.75rem;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 1.1rem;
+  text-align: center;
+}
+
+.teams-header {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  align-items: center;
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  padding: 1rem 1.2rem;
+  margin-bottom: 1.5rem;
+}
+
+.team-label {
+  font-size: 0.95rem;
+}
+
+td.score-winner {
+  font-weight: bold;
+  color: #1a6e2e;
+}
+
+.round-count {
+  color: #888;
+  font-size: 0.85rem;
+  margin-left: 0.3rem;
+}
+
+.button-danger-small {
+  background: none;
+  border: none;
+  color: #c0392b;
+  cursor: pointer;
+  font-size: 0.85rem;
+  padding: 0.2rem 0.5rem;
+}
+
+.button-danger-small:hover {
+  color: #a93226;
+}
+
+
+
+/* Game show page */
+.game-show-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 1.5rem;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.game-show-header h1 {
+  margin-bottom: 0.2rem;
+}
+
+.game-meta {
+  color: #888;
+  font-size: 0.9rem;
+  margin: 0;
+}
+
+.game-show-actions {
+  display: flex;
+  gap: 0.75rem;
+  align-items: center;
+}
+
+.team-scorecards {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+  margin-bottom: 2rem;
+}
+
+.scorecard {
+  flex: 1;
+  min-width: 180px;
+  background: white;
+  border: 2px solid #ddd;
+  border-radius: 10px;
+  padding: 1.2rem 1.4rem;
+}
+
+.scorecard-leader {
+  border-color: #f0a500;
+  background: #fffbea;
+}
+
+.scorecard-label {
+  font-size: 0.8rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: #888;
+  margin-bottom: 0.3rem;
+}
+
+.scorecard-players {
+  font-size: 1.1rem;
+  font-weight: 600;
+  margin-bottom: 0.8rem;
+}
+
+.scorecard-stats {
+  display: flex;
+  gap: 1.5rem;
+}
+
+.scorecard-stats span {
+  font-size: 1.4rem;
+  line-height: 1;
+}
+
+.scorecard-stats small {
+  display: block;
+  font-size: 0.75rem;
+  color: #888;
+  font-weight: normal;
+  margin-top: 0.1rem;
+}
+
+.scorecard-badge {
+  margin-top: 0.8rem;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: #b7860a;
+}
+
+.rounds-table th small {
+  font-weight: normal;
+  color: #ccc;
+  font-size: 0.78rem;
+}
+
+.round-number {
+  color: #aaa;
+  font-size: 0.9rem;
+  text-align: center;
+}
+
+.score-cell {
+  text-align: center;
+  font-size: 1.15rem;
+  font-weight: 500;
+  min-width: 60px;
+}
+
+.win-indicator {
+  font-size: 0.75rem;
+  margin-left: 0.2rem;
+  color: #1a6e2e;
+}
+
+.margin-cell {
+  text-align: center;
+}
+
+.margin-badge {
+  display: inline-block;
+  padding: 0.15rem 0.5rem;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+
+.margin-tight  { background: #fde8e8; color: #c0392b; }
+.margin-normal { background: #eaf4ff; color: #2471a3; }
+.margin-big    { background: #e8f8e8; color: #1a6e2e; }
+
+tr.totals-row td {
+  border-top: 2px solid #ddd;
+  background: #fafafa;
+  padding-top: 0.8rem;
+}
+
+.round-score-names {
+  display: block;
+  font-size: 0.8rem;
+  font-weight: normal;
+  color: #888;
+  margin-top: 0.1rem;
+}
