@@ -179,6 +179,6 @@ class StatisticsController < ApplicationController
         ts[:avg_score] = ts[:rounds] > 0 ? (ts[:points].to_f / ts[:rounds]).round(1) : 0.0
         ts
       end
-      .sort_by { |ts| [-ts[:wins], ts[:players].map(&:name).join] }
+      .sort_by { |ts| [-ts[:wins], -ts[:points], ts[:players].map(&:name).join] }
   end
 end
