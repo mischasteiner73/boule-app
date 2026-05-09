@@ -14,8 +14,5 @@ test:
   database: boule_app_test
 
 production:
-  <<: *default
-  database: boule_app_production
-  username: <%= ENV["DATABASE_USERNAME"] %>
-  password: <%= ENV["DATABASE_PASSWORD"] %>
-  host: <%= ENV.fetch("DATABASE_HOST") { "localhost" } %>
+  url: <%= ENV["DATABASE_URL"] %>
+  pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
