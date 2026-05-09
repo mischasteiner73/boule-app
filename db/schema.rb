@@ -10,7 +10,10 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_05_09_093147) do
+ActiveRecord::Schema[8.1].define(version: 2026_05_09_101710) do
+  # These are extensions that must be enabled in order to support this database
+  enable_extension "pg_catalog.plpgsql"
+
   create_table "games", force: :cascade do |t|
     t.datetime "created_at", null: false
     t.datetime "played_at"
@@ -58,10 +61,31 @@ ActiveRecord::Schema[8.1].define(version: 2026_05_09_093147) do
     t.index ["game_id"], name: "index_teams_on_game_id"
   end
 
-  create_table "tournaments", force: :cascade do |t|
+  create_table "tournament_series", force: :cascade do |t|
     t.datetime "created_at", null: false
     t.string "name", null: false
     t.datetime "updated_at", null: false
+    t.index ["name"], name: "index_tournament_series_on_name", unique: true
+  end
+
+  create_table "tournaments", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.string "name", null: false
+    t.bigint "tournament_serie_id", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "users", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.string "email", default: "", null: false
+    t.string "encrypted_password", default: "", null: false
+    t.string "name"
+    t.datetime "remember_created_at"
+    t.datetime "reset_password_sent_at"
+    t.string "reset_password_token"
+    t.datetime "updated_at", null: false
+    t.index ["email"], name: "index_users_on_email", unique: true
+    t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
   end
 
   add_foreign_key "games", "tournaments"
@@ -71,4 +95,5 @@ ActiveRecord::Schema[8.1].define(version: 2026_05_09_093147) do
   add_foreign_key "team_players", "players"
   add_foreign_key "team_players", "teams"
   add_foreign_key "teams", "games"
+  add_foreign_key "tournaments", "tournament_series", column: "tournament_serie_id"
 end

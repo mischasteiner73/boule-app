@@ -1,0 +1,35 @@
+<h1>Tournaments</h1>
+
+<%= link_to "New Tournament", new_tournament_path, class: "button" %>
+
+<% if @tournaments.any? %>
+  <table>
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Series</th>
+        <th>Games</th>
+        <th>Rounds</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% @tournaments.each do |tournament| %>
+        <tr>
+          <td><%= tournament.name %></td>
+          <td><%= tournament.tournament_serie&.name || "—" %></td>
+          <td><%= tournament.games.size %></td>
+          <td><%= tournament.games.sum { |game| game.rounds.size } %></td>
+          <td class="actions">
+            <%= link_to "Statistics", statistics_tournament_path(tournament) %>
+            <%= link_to "Edit", edit_tournament_path(tournament) %>
+            <%= button_to "Delete", tournament_path(tournament), method: :delete,
+                  data: { turbo_confirm: "Delete #{tournament.name}?" }, class: "button-danger" %>
+          </td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+<% else %>
+  <p class="empty-state">No tournaments yet. Create your first one!</p>
+<% end %>

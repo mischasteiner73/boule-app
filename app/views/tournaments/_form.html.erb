@@ -1,0 +1,21 @@
+<%= form_with model: tournament do |form| %>
+  <% if tournament.errors.any? %>
+    <div class="error-messages">
+      <% tournament.errors.full_messages.each do |message| %>
+        <p><%= message %></p>
+      <% end %>
+    </div>
+  <% end %>
+
+  <div class="field">
+    <%= form.label :name, "Tournament Name" %>
+    <%= form.text_field :name, autofocus: true %>
+  </div>
+
+  <div class="field">
+    <%= form.label :tournament_serie_id, "Series" %>
+    <%= form.collection_select :tournament_serie_id, @series, :id, :name, { prompt: "Select a series" }, { required: true } %>
+  </div>
+
+  <%= form.submit class: "button" %>
+<% end %>

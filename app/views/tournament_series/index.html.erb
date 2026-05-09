@@ -1,0 +1,35 @@
+<h1>Series</h1>
+
+<%= link_to "New Series", new_tournament_series_path, class: "button" %>
+
+<% if @series.any? %>
+  <table>
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Tournaments</th>
+        <th>Games</th>
+        <th>Rounds</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% @series.each do |serie| %>
+        <tr>
+          <td><%= serie.name %></td>
+          <td><%= serie.tournaments.size %></td>
+          <td><%= serie.games.size %></td>
+          <td><%= serie.tournaments.sum { |t| t.games.sum { |g| g.rounds.size } } %></td>
+          <td class="actions">
+            <%= link_to "Statistics", statistics_tournament_series_path(serie) %>
+            <%= link_to "Edit", edit_tournament_series_path(serie) %>
+            <%= button_to "Delete", tournament_series_path(serie), method: :delete,
+                  data: { turbo_confirm: "Delete #{serie.name}?" }, class: "button-danger" %>
+          </td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+<% else %>
+  <p class="empty-state">No series yet. Create your first one!</p>
+<% end %>

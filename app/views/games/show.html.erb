@@ -21,7 +21,7 @@
     <% @teams.each_with_index do |team, index| %>
       <% wins   = @team_wins[team.id] %>
       <% total  = @team_totals[team.id] %>
-      <% leader = @team_wins.values.max > 0 && wins == @team_wins.values.max %>
+      <% leader = (@team_wins.values.max || 0) > 0 && wins == @team_wins.values.max %>
       <div class="scorecard <%= 'scorecard-leader' if leader %>">
         <div class="scorecard-label">Team <%= index + 1 %></div>
         <div class="scorecard-players"><%= team.players.map(&:name).join(" & ") %></div>

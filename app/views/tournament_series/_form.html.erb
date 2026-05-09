@@ -1,0 +1,31 @@
+<%= form_with model: serie, url: serie.new_record? ? tournament_series_index_path : tournament_series_path(serie) do |form| %>
+  <% if serie.errors.any? %>
+    <div class="error-messages">
+      <% serie.errors.full_messages.each do |message| %>
+        <p><%= message %></p>
+      <% end %>
+    </div>
+  <% end %>
+
+  <div class="field">
+    <%= form.label :name, "Series Name" %>
+    <%= form.text_field :name, autofocus: true %>
+  </div>
+
+  <div class="field">
+    <label>Tournaments</label>
+    <div class="checkbox-list">
+      <% @tournaments.each do |tournament| %>
+        <label class="checkbox-item">
+          <input type="checkbox"
+                 name="tournament_serie[tournament_ids][]"
+                 value="<%= tournament.id %>"
+                 <%= "checked" if tournament.tournament_serie_id == serie.id %>>
+          <%= tournament.name %>
+        </label>
+      <% end %>
+    </div>
+  </div>
+
+  <%= form.submit class: "button" %>
+<% end %>

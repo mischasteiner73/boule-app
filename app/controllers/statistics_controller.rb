@@ -1,35 +1,52 @@
 class StatisticsController < ApplicationController
   def index
     @tournament = nil
+    @serie = nil
     @tournaments = Tournament.order(:name)
+    @series = TournamentSerie.order(:name)
     setup_stats(Player.all.to_a)
   end
 
   def tournament
     @tournament = Tournament.find(params[:id])
+    @serie = nil
     @tournaments = Tournament.order(:name)
+    @series = TournamentSerie.order(:name)
     players = Player.joins(teams: :game).where(games: { tournament: @tournament }).distinct.to_a
     setup_stats(players, tournament: @tournament)
   end
 
-  private
-
-  def setup_stats(players, tournament: nil)
-    @by_wins           = players.sort_by { |p| [-p.wins(tournament: tournament), p.name] }
-    @by_win_percentage = players.sort_by { |p| [-p.win_percentage(tournament: tournament), p.name] }
-    @by_points         = players.sort_by { |p| [-p.total_points(tournament: tournament), p.name] }
-    @by_average_score  = players.sort_by { |p| [-p.average_score(tournament: tournament), p.name] }
-    @by_streak         = players.sort_by { |p| [-p.longest_winning_streak(tournament: tournament), p.name] }
-    @by_win_margin     = players.sort_by { |p| [-p.biggest_win_margin(tournament: tournament), p.name] }
-    @best_duos         = compute_best_duos(tournament: tournament)
-    @tightest_rounds   = compute_tightest_rounds(tournament: tournament)
+  def serie
+    @serie = TournamentSerie.find(params[:id])
+    @tournament = nil
+    @tournaments = Tournament.order(:name)
+    @series = TournamentSerie.order(:name)
+    players = Player.joins(teams: { game: :tournament })
+                    .where(tournaments: { tournament_serie_id: @serie.id })
+                    .distinct.to_a
+    setup_stats(players, serie: @serie)
   end
 
-  def compute_best_duos(tournament: nil)
+  private
+
+  def setup_stats(players, tournament: nil, serie: nil)
+    opts = { tournament: tournament, serie: serie }
+    @by_wins           = players.sort_by { |p| [-p.wins(**opts), p.name] }
+    @by_win_percentage = players.sort_by { |p| [-p.win_percentage(**opts), p.name] }
+    @by_points         = players.sort_by { |p| [-p.total_points(**opts), p.name] }
+    @by_average_score  = players.sort_by { |p| [-p.average_score(**opts), p.name] }
+    @by_streak         = players.sort_by { |p| [-p.longest_winning_streak(**opts), p.name] }
+    @by_win_margin     = players.sort_by { |p| [-p.biggest_win_margin(**opts), p.name] }
+    @best_duos         = compute_best_duos(**opts)
+    @tightest_rounds   = compute_tightest_rounds(**opts)
+  end
+
+  def compute_best_duos(tournament: nil, serie: nil)
     duo_stats = Hash.new { |hash, key| hash[key] = { players: nil, wins: 0, rounds: 0 } }
 
     scope = Team.includes(:players, round_scores: { round: :round_scores })
     scope = scope.joins(:game).where(games: { tournament: tournament }) if tournament
+    scope = scope.joins(game: :tournament).where(tournaments: { tournament_serie_id: serie.id }) if serie
 
     scope.each do |team|
       players = team.players.to_a
@@ -53,9 +70,10 @@ class StatisticsController < ApplicationController
       .first(5)
   end
 
-  def compute_tightest_rounds(tournament: nil)
+  def compute_tightest_rounds(tournament: nil, serie: nil)
     scope = Round.includes(:round_scores, game: { teams: :players })
     scope = scope.joins(:game).where(games: { tournament: tournament }) if tournament
+    scope = scope.joins(game: :tournament).where(tournaments: { tournament_serie_id: serie.id }) if serie
 
     scope.map do |round|
       scores = round.round_scores.map(&:score).compact.sort.reverse

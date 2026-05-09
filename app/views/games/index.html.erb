@@ -2,6 +2,15 @@
 
 <%= link_to "New Game", new_game_path, class: "button" %>
 
+<%= form_with url: games_path, method: :get, data: { turbo_frame: "_top" } do |form| %>
+  <div class="filter-bar">
+    <%= form.select :tournament_id,
+          @tournaments.map { |t| [t.name, t.id] },
+          { include_blank: "All tournaments", selected: @selected_tournament&.id },
+          onchange: "this.form.requestSubmit()" %>
+  </div>
+<% end %>
+
 <% if @games.any? %>
   <table>
     <thead>

@@ -1,0 +1,7 @@
+<% if resource.errors.any? %>
+  <div class="error-messages" data-turbo-temporary>
+    <% resource.errors.full_messages.each do |message| %>
+      <p><%= message %></p>
+    <% end %>
+  </div>
+<% end %>

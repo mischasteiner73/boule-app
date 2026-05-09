@@ -4,48 +4,51 @@ class Player < ApplicationRecord
 
   validates :name, presence: true, uniqueness: true
 
-  def all_games(tournament: nil)
+  def all_games(tournament: nil, serie: nil)
     scope = Game.joins(teams: :team_players).where(team_players: { player_id: id }).distinct.order(played_at: :desc)
     scope = scope.where(tournament: tournament) if tournament
+    scope = scope.where(tournament_id: serie.tournament_ids) if serie
     scope
   end
 
-  def all_rounds(tournament: nil)
+  def all_rounds(tournament: nil, serie: nil)
     scope = Round.joins(game: { teams: :team_players }).where(team_players: { player_id: id }).distinct
     scope = scope.where(games: { tournament_id: tournament.id }) if tournament
+    scope = scope.where(games: { tournament_id: serie.tournament_ids }) if serie
     scope
   end
 
-  def wins(tournament: nil)
-    all_rounds(tournament: tournament).count { |round| won_round?(round) }
+  def wins(tournament: nil, serie: nil)
+    all_rounds(tournament: tournament, serie: serie).count { |round| won_round?(round) }
   end
 
-  def total_rounds(tournament: nil)
-    all_rounds(tournament: tournament).count
+  def total_rounds(tournament: nil, serie: nil)
+    all_rounds(tournament: tournament, serie: serie).count
   end
 
-  def win_percentage(tournament: nil)
-    rounds = total_rounds(tournament: tournament)
+  def win_percentage(tournament: nil, serie: nil)
+    rounds = total_rounds(tournament: tournament, serie: serie)
     return 0.0 if rounds.zero?
-    (wins(tournament: tournament).to_f / rounds * 100).round(1)
+    (wins(tournament: tournament, serie: serie).to_f / rounds * 100).round(1)
   end
 
-  def total_points(tournament: nil)
+  def total_points(tournament: nil, serie: nil)
     scope = RoundScore.joins(team: :team_players).where(team_players: { player_id: id })
     scope = scope.joins(round: :game).where(games: { tournament_id: tournament.id }) if tournament
+    scope = scope.joins(round: :game).where(games: { tournament_id: serie.tournament_ids }) if serie
     scope.sum(:score)
   end
 
-  def average_score(tournament: nil)
-    rounds = total_rounds(tournament: tournament)
+  def average_score(tournament: nil, serie: nil)
+    rounds = total_rounds(tournament: tournament, serie: serie)
     return 0.0 if rounds.zero?
-    (total_points(tournament: tournament).to_f / rounds).round(1)
+    (total_points(tournament: tournament, serie: serie).to_f / rounds).round(1)
   end
 
-  def longest_winning_streak(tournament: nil)
+  def longest_winning_streak(tournament: nil, serie: nil)
     streak = 0
     max_streak = 0
-    all_rounds(tournament: tournament).order(:id).each do |round|
+    all_rounds(tournament: tournament, serie: serie).order(:id).each do |round|
       if won_round?(round)
         streak += 1
         max_streak = [max_streak, streak].max
@@ -56,8 +59,8 @@ class Player < ApplicationRecord
     max_streak
   end
 
-  def biggest_win_margin(tournament: nil)
-    all_rounds(tournament: tournament).order(:id).filter_map do |round|
+  def biggest_win_margin(tournament: nil, serie: nil)
+    all_rounds(tournament: tournament, serie: serie).order(:id).filter_map do |round|
       next unless won_round?(round)
       scores = round.round_scores.map(&:score).compact.sort.reverse
       next if scores.size < 2

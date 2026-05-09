@@ -1,4 +1,6 @@
-<% if @by_wins.all? { |player| player.total_rounds(tournament: @tournament) == 0 } %>
+<% scope_opts = @serie ? { serie: @serie } : { tournament: @tournament } %>
+
+<% if @by_wins.all? { |player| player.total_rounds(**scope_opts) == 0 } %>
   <p class="empty-state">No completed games yet.</p>
 <% else %>
   <div class="stats-grid">
@@ -18,8 +20,8 @@
             <tr class="<%= index == 0 ? 'rank-first' : '' %>">
               <td><%= index + 1 %></td>
               <td><%= player.name %></td>
-              <td><%= player.wins(tournament: @tournament) %></td>
-              <td><%= player.total_rounds(tournament: @tournament) %></td>
+              <td><%= player.wins(**scope_opts) %></td>
+              <td><%= player.total_rounds(**scope_opts) %></td>
             </tr>
           <% end %>
         </tbody>
@@ -42,8 +44,8 @@
             <tr class="<%= index == 0 ? 'rank-first' : '' %>">
               <td><%= index + 1 %></td>
               <td><%= player.name %></td>
-              <td><%= player.win_percentage(tournament: @tournament) %>%</td>
-              <td><%= player.total_rounds(tournament: @tournament) %></td>
+              <td><%= player.win_percentage(**scope_opts) %>%</td>
+              <td><%= player.total_rounds(**scope_opts) %></td>
             </tr>
           <% end %>
         </tbody>
@@ -65,7 +67,7 @@
             <tr class="<%= index == 0 ? 'rank-first' : '' %>">
               <td><%= index + 1 %></td>
               <td><%= player.name %></td>
-              <td><%= player.total_points(tournament: @tournament) %></td>
+              <td><%= player.total_points(**scope_opts) %></td>
             </tr>
           <% end %>
         </tbody>
@@ -88,8 +90,8 @@
             <tr class="<%= index == 0 ? 'rank-first' : '' %>">
               <td><%= index + 1 %></td>
               <td><%= player.name %></td>
-              <td><%= player.average_score(tournament: @tournament) %></td>
-              <td><%= player.total_rounds(tournament: @tournament) %></td>
+              <td><%= player.average_score(**scope_opts) %></td>
+              <td><%= player.total_rounds(**scope_opts) %></td>
             </tr>
           <% end %>
         </tbody>
@@ -108,10 +110,10 @@
         </thead>
         <tbody>
           <% @by_streak.each_with_index do |player, index| %>
-            <tr class="<%= index == 0 && player.longest_winning_streak(tournament: @tournament) > 0 ? 'rank-first' : '' %>">
+            <tr class="<%= index == 0 && player.longest_winning_streak(**scope_opts) > 0 ? 'rank-first' : '' %>">
               <td><%= index + 1 %></td>
               <td><%= player.name %></td>
-              <td><%= player.longest_winning_streak(tournament: @tournament) %> in a row</td>
+              <td><%= player.longest_winning_streak(**scope_opts) %> in a row</td>
             </tr>
           <% end %>
         </tbody>
@@ -130,10 +132,10 @@
         </thead>
         <tbody>
           <% @by_win_margin.each_with_index do |player, index| %>
-            <tr class="<%= index == 0 && player.biggest_win_margin(tournament: @tournament) > 0 ? 'rank-first' : '' %>">
+            <tr class="<%= index == 0 && player.biggest_win_margin(**scope_opts) > 0 ? 'rank-first' : '' %>">
               <td><%= index + 1 %></td>
               <td><%= player.name %></td>
-              <td><%= player.biggest_win_margin(tournament: @tournament) > 0 ? "+#{player.biggest_win_margin(tournament: @tournament)}" : "—" %></td>
+              <td><%= player.biggest_win_margin(**scope_opts) > 0 ? "+#{player.biggest_win_margin(**scope_opts)}" : "—" %></td>
             </tr>
           <% end %>
         </tbody>

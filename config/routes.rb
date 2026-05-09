@@ -1,4 +1,5 @@
 Rails.application.routes.draw do
+  devise_for :users
   get "up" => "rails/health#show", as: :rails_health_check
 
   root "players#index"
@@ -17,6 +18,13 @@ Rails.application.routes.draw do
     resources :team_players, only: [:create, :destroy]
   end
 
+  resources :tournaments do
+    get :statistics, on: :member, to: "statistics#tournament"
+  end
+
+  resources :tournament_series do
+    get :statistics, on: :member, to: "statistics#serie"
+  end
+
   get "statistics", to: "statistics#index"
-  get "tournaments/:id/statistics", to: "statistics#tournament", as: :tournament_statistics
 end

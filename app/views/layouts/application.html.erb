@@ -14,9 +14,12 @@
       <div class="nav-brand"><%= link_to "🎯 Boule Tournament", root_path %></div>
       <div class="nav-links">
         <%= link_to "Players", players_path %>
+        <%= link_to "Series", tournament_series_index_path %>
+        <%= link_to "Tournaments", tournaments_path %>
         <%= link_to "Games", games_path %>
         <%= link_to "New Game", new_game_path %>
         <%= link_to "Statistics", statistics_path %>
+        <%= button_to "Sign out", destroy_user_session_path, method: :delete, class: "button-nav-signout" %>
       </div>
     </nav>
 

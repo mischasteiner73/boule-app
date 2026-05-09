@@ -2,7 +2,12 @@ class GamesController < ApplicationController
   before_action :set_game, only: [:show, :edit, :update, :destroy, :setup_teams, :save_teams]
 
   def index
-    @games = Game.includes(:tournament, teams: :players, rounds: :round_scores).order(played_at: :desc)
+    @tournaments = Tournament.order(:name)
+    @selected_tournament = @tournaments.find { |t| t.id == params[:tournament_id].to_i } if params[:tournament_id].present?
+
+    scope = Game.includes(:tournament, teams: :players, rounds: :round_scores).order(played_at: :desc)
+    scope = scope.where(tournament: @selected_tournament) if @selected_tournament
+    @games = scope
   end
 
   def show
